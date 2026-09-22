@@ -25,7 +25,19 @@ async function notifyAdmin({ orderId, customerName, phoneNumber, address, cartIt
     })
   });
 
-  if (!response.ok) throw new Error(`Resend returned ${response.status}`);
+  const responseBody = await response.text();
+  let resendResult;
+  try {
+    resendResult = JSON.parse(responseBody);
+  } catch {
+    resendResult = { raw: responseBody.slice(0, 300) };
+  }
+
+  if (!response.ok) {
+    throw new Error(`Resend returned ${response.status}: ${resendResult.message || resendResult.raw || "Unknown email error"}`);
+  }
+
+  console.log("Order email accepted by Resend:", resendResult.id || "no message id returned");
 }
 
 export async function POST(request) {
