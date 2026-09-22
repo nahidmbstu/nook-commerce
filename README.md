@@ -13,6 +13,10 @@ A lightweight, mobile-first Next.js storefront for Facebook traffic, COD checkou
 
 The storefront reads available products from Supabase. If credentials are not configured, it shows the included local catalog so the UI can still be previewed. Orders are inserted by `POST /api/checkout` and default to `pending` with Cash on Delivery.
 
+## Order email notifications
+
+Order notifications use Resend. Create a Resend API key, verify a sending domain, and add `RESEND_API_KEY`, `ADMIN_EMAIL`, and `FROM_EMAIL` to `.env.local` and Vercel. For local testing, Resend allows `onboarding@resend.dev` as `FROM_EMAIL` with the email address that owns the Resend account as `ADMIN_EMAIL`. Email failures are logged but do not cancel a successfully saved order.
+
 ## Supabase tables
 
 The SQL script creates `products` and `orders`, enables row-level security, permits public reads of available products, and permits order creation for the checkout endpoint. Review the policies before adding authentication or an admin dashboard.
