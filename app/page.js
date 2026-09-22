@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { ArrowRight, Check, ChevronDown, ChevronUp, Leaf, Minus, Plus, ShoppingBag, Truck, X } from "lucide-react";
 
 const fallbackProducts = [
@@ -125,7 +126,7 @@ export default function Storefront({ products = fallbackProducts }) {
 }
 
 function ProductCard({ product, index, onAdd, onBuy }) {
-  return <article className={`product-card card-delay-${index}`}><div className="product-image"><img src={product.image_url} alt={product.title} loading={index > 1 ? "lazy" : "eager"} /><span className="product-number">0{index + 1}</span></div><div className="product-info"><div><h3>{product.title}</h3><p>{product.description}</p></div><strong>{formatPrice(product.price)}</strong></div><div className="product-actions"><button className="add-button" onClick={onAdd}><Plus size={16} /> Add to bag</button><button className="buy-button" onClick={onBuy}>Buy now <ArrowRight size={15} /></button></div></article>;
+  return <article className={`product-card card-delay-${index}`}><Link className="product-detail-link" href={`/products/${product.id}`} aria-label={`View details for ${product.title}`}><div className="product-image"><img src={product.image_url} alt={product.title} loading={index > 1 ? "lazy" : "eager"} /><span className="product-number">0{index + 1}</span></div><div className="product-info"><div><h3>{product.title}</h3><p>{product.description}</p></div><strong>{formatPrice(product.price)}</strong></div></Link><div className="product-actions"><button className="add-button" onClick={onAdd}><Plus size={16} /> Add to bag</button><button className="buy-button" onClick={onBuy}>Buy now <ArrowRight size={15} /></button></div></article>;
 }
 
 function CartDrawer({ cart, subtotal, deliveryFee, total, deliveryZone, setDeliveryZone, onUpdate, onClose, onSubmit, isSubmitting, error }) {
