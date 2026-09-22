@@ -44,7 +44,7 @@ export default async function ProductPage({ params }) {
       <Link className="back-link" href="/#collection"><ArrowLeft size={16} /> Back to collection</Link>
       <div className="product-detail-grid">
         <div className="product-detail-image"><img src={product.image_url} alt={product.title} /></div>
-        <div className="product-detail-copy"><p className="eyebrow">A considered choice</p><h1>{product.title}</h1><strong className="detail-price">{formatPrice(product.price)}</strong><p className="detail-description">{product.description}</p><div className="detail-perks"><div><Truck size={18} /><span>Nationwide home delivery</span></div><div><Check size={18} /><span>Cash on delivery available</span></div></div><Link className="place-order detail-cta" href={`/?product=${product.id}#collection`}>Order this piece <ArrowRight size={17} /></Link><p className="detail-note">Delivery from ৳60 inside city and ৳120 outside city.</p></div>
+        <div className="product-detail-copy"><p className="eyebrow">A considered choice</p><h1>{product.title}</h1><strong className="detail-price">{formatPrice(product.price)}</strong><p className="detail-description">{product.description}</p><div className="detail-perks"><div><Truck size={18} /><span>Nationwide home delivery</span></div><div><Check size={18} /><span>Cash on delivery available</span></div></div><div className="detail-actions"><Link className="add-button detail-button" href={`/?add=${product.id}#collection`}>Add to bag</Link><Link className="buy-button detail-button" href={`/?add=${product.id}&buy=1#collection`}>Buy now <ArrowRight size={17} /></Link></div><p className="detail-note">Delivery from ৳60 inside city and ৳120 outside city.</p></div>
       </div>
     </section>
   </main>;

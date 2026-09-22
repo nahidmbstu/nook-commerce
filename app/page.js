@@ -33,6 +33,19 @@ export default function Storefront({ products = fallbackProducts }) {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("add");
+    if (!productId) return;
+
+    const product = catalog.find((item) => String(item.id) === productId);
+    if (!product) return;
+
+    updateCart(product, 1);
+    setIsCartOpen(params.get("buy") === "1");
+    window.history.replaceState({}, "", "/");
+  }, [catalog]);
+
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryFee = cart.length ? DELIVERY_FEES[deliveryZone] : 0;
   const total = subtotal + deliveryFee;
