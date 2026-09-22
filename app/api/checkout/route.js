@@ -14,9 +14,11 @@ export async function POST(request) {
       return NextResponse.json({ error: "Supabase is not configured. Add your project keys and try again." }, { status: 503 });
     }
 
-    const { data, error } = await supabase
+    const orderId = crypto.randomUUID();
+    const { error } = await supabase
       .from("orders")
       .insert({
+        id: orderId,
         customer_name: customerName.trim(),
         phone_number: phoneNumber.trim(),
         address: address.trim(),
@@ -24,16 +26,14 @@ export async function POST(request) {
         total_price: Number(totalPrice),
         payment_method: paymentMethod || "Cash on Delivery",
         status: "pending"
-      })
-      .select("id, created_at")
-      .single();
+      });
 
     if (error) {
       console.error("Checkout insert failed:", error);
       return NextResponse.json({ error: "We could not place your order. Please try again." }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, order: data }, { status: 201 });
+    return NextResponse.json({ success: true, order: { id: orderId } }, { status: 201 });
   } catch (error) {
     console.error("Checkout request failed:", error);
     return NextResponse.json({ error: "Invalid order request." }, { status: 400 });
