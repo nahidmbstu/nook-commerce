@@ -26,7 +26,7 @@ create table if not exists public.admin_users (
   created_at timestamptz not null default now()
 );
 
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 
 create or replace function public.verify_admin_password(login_email text, login_password text)
 returns boolean
@@ -37,7 +37,7 @@ as $$
   select exists (
     select 1 from public.admin_users
     where email = lower(trim(login_email))
-      and password_hash = crypt(login_password, password_hash)
+      and password_hash = extensions.crypt(login_password, password_hash)
   );
 $$;
 
@@ -47,7 +47,7 @@ grant execute on function public.verify_admin_password(text, text) to service_ro
 alter table public.admin_users enable row level security;
 
 insert into public.admin_users (email, password_hash)
-values ('nahidhasan.workpost@gmail.com', crypt('NookAdmin123!', gen_salt('bf')))
+values ('nahidhasan.workpost@gmail.com', extensions.crypt('NookAdmin123!', extensions.gen_salt('bf')))
 on conflict (email) do nothing;
 
 alter table public.products enable row level security;
