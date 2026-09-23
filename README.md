@@ -17,6 +17,10 @@ The storefront reads available products from Supabase. If credentials are not co
 
 Order notifications use Resend. Create a Resend API key, verify a sending domain, and add `RESEND_API_KEY`, `ADMIN_EMAIL`, and `FROM_EMAIL` to `.env.local` and Vercel. For local testing, Resend allows `onboarding@resend.dev` as `FROM_EMAIL` with the email address that owns the Resend account as `ADMIN_EMAIL`. Email failures are logged but do not cancel a successfully saved order.
 
+## Admin orders dashboard
+
+Run the updated `supabase/schema.sql` once to create `admin_users` and the password verification function. Add `SUPABASE_SERVICE_ROLE_KEY` and a long random `ADMIN_SESSION_SECRET` to local and Vercel Production environment variables. Open `/admin` to sign in with the seeded account `nahidhasan.workpost@gmail.com` and initial password `NookAdmin123!`, then change that password in Supabase by updating the row with `crypt('your-new-password', gen_salt('bf'))`. The dashboard lists all orders and lets you update their status. Never expose the service-role key to the browser.
+
 ## Supabase tables
 
 The SQL script creates `products` and `orders`, enables row-level security, permits public reads of available products, and permits order creation for the checkout endpoint. Review the policies before adding authentication or an admin dashboard.
