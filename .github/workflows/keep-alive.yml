@@ -1,0 +1,26 @@
+name: Keep Supabase alive
+
+on:
+  schedule:
+    # Run every 15 minutes so the Supabase project stays active and doesn't pause.
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping /api/health
+        run: |
+          response=$(curl -s --max-time 30 -D - https://nook-commerce.vercel.app/api/health || true)
+          http_code=$(echo "$response" | grep -i '^HTTP/' | awk '{print $2}' | tail -n1)
+          body=$(echo "$response" | sed '1,/^\r*$/d')
+          echo "HTTP $http_code"
+          echo "$body"
+          if [ "$http_code" != "200" ]; then
+            echo "Health check failed with HTTP $http_code"
+            exit 1
+          fi
+          echo "$body" | grep -q '"status":"ok"' || { echo "Health check body not ok"; exit 1; }
+          echo "Supabase is awake."
