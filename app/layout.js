@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Nook | Small things, beautifully chosen",
-  description: "A considered collection for slower, better everyday rituals."
+  title: "Labonno Maya | Premium lifestyle essentials",
+  description: "Luxury everyday essentials, curated fashion, tech, and premium accessories."
 };
 
 export default function RootLayout({ children }) {

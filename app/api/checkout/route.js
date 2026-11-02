@@ -21,7 +21,7 @@ async function notifyAdmin({ orderId, customerName, phoneNumber, address, cartIt
       from: fromEmail,
       to: [adminEmail],
       subject: `New COD order #${orderId.slice(0, 8).toUpperCase()} - ৳${Number(totalPrice).toLocaleString("en-BD")}`,
-      html: `<h2>New Nook order</h2><p><strong>Order:</strong> #${orderId.slice(0, 8).toUpperCase()}</p><p><strong>Customer:</strong> ${escapeHtml(customerName)}<br><strong>Phone:</strong> ${escapeHtml(phoneNumber)}<br><strong>Address:</strong> ${escapeHtml(address)}<br><strong>Payment:</strong> ${escapeHtml(paymentMethod || "Cash on Delivery")}</p><h3>Items</h3><ul>${itemsHtml}</ul><p><strong>Total:</strong> ৳${Number(totalPrice).toLocaleString("en-BD")}</p>`
+      html: `<h2>New Labonno Maya order</h2><p><strong>Order:</strong> #${orderId.slice(0, 8).toUpperCase()}</p><p><strong>Customer:</strong> ${escapeHtml(customerName)}<br><strong>Phone:</strong> ${escapeHtml(phoneNumber)}<br><strong>Address:</strong> ${escapeHtml(address)}<br><strong>Payment:</strong> ${escapeHtml(paymentMethod || "Cash on Delivery")}</p><h3>Items</h3><ul>${itemsHtml}</ul><p><strong>Total:</strong> ৳${Number(totalPrice).toLocaleString("en-BD")}</p>`
     })
   });
 
@@ -40,6 +40,13 @@ async function notifyAdmin({ orderId, customerName, phoneNumber, address, cartIt
   console.log("Order email accepted by Resend:", resendResult.id || "no message id returned");
 }
 
+const UNAVAILABLE_MESSAGE = "Ordering is temporarily unavailable. Please try again in a few minutes.";
+
+function isConnectionFailure(error) {
+  const message = String(error?.message || error || "");
+  return !error?.code || /fetch failed|ENOTFOUND|ECONNREFUSED|ECONNRESET|ETIMEDOUT|EAI_AGAIN|getaddrinfo|network/i.test(message);
+}
+
 export async function POST(request) {
   try {
     const payload = await request.json();
@@ -49,31 +56,44 @@ export async function POST(request) {
       return NextResponse.json({ error: "Please complete your delivery details and add at least one item." }, { status: 400 });
     }
 
+    const total = Number(totalPrice);
+    if (!Number.isFinite(total) || total < 0) {
+      return NextResponse.json({ error: "The order total is invalid. Please refresh and try again." }, { status: 400 });
+    }
+
     if (!supabase) {
       return NextResponse.json({ error: "Supabase is not configured. Add your project keys and try again." }, { status: 503 });
     }
 
     const orderId = crypto.randomUUID();
-    const { error } = await supabase
-      .from("orders")
-      .insert({
-        id: orderId,
-        customer_name: customerName.trim(),
-        phone_number: phoneNumber.trim(),
-        address: address.trim(),
-        cart_items: cartItems,
-        total_price: Number(totalPrice),
-        payment_method: paymentMethod || "Cash on Delivery",
-        status: "pending"
-      });
+    let insertError = null;
 
-    if (error) {
-      console.error("Checkout insert failed:", error);
-      return NextResponse.json({ error: "We could not place your order. Please try again." }, { status: 500 });
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .insert({
+          id: orderId,
+          customer_name: customerName.trim(),
+          phone_number: phoneNumber.trim(),
+          address: address.trim(),
+          cart_items: cartItems,
+          total_price: total,
+          payment_method: paymentMethod || "Cash on Delivery",
+          status: "pending"
+        });
+      insertError = error;
+    } catch (error) {
+      insertError = error;
+    }
+
+    if (insertError) {
+      console.error("Checkout insert failed:", insertError.message || insertError);
+      const message = isConnectionFailure(insertError) ? UNAVAILABLE_MESSAGE : "We could not place your order. Please try again.";
+      return NextResponse.json({ error: message }, { status: isConnectionFailure(insertError) ? 503 : 500 });
     }
 
     try {
-      await notifyAdmin({ orderId, customerName, phoneNumber, address, cartItems, totalPrice, paymentMethod });
+      await notifyAdmin({ orderId, customerName, phoneNumber, address, cartItems, totalPrice: total, paymentMethod });
     } catch (emailError) {
       console.error("Order email failed:", emailError);
     }

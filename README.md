@@ -28,3 +28,16 @@ The SQL script creates `products` and `orders`, enables row-level security, perm
 ## Delivery fees
 
 Inside City is ৳60 and Outside City is ৳120. Both the checkout total and the order payload include the selected delivery fee.
+
+## Health check
+
+`GET /api/health` returns `200` with `{ status: "ok" }` when the app boots and the Supabase project answers a query. It returns `503` with `{ status: "degraded" }` when the catalog database is unreachable, so uptime monitors and deploy checks can catch a deleted or paused project. The response never includes credentials.
+
+## If the storefront looks empty or checkout fails
+
+1. Open `/api/health`. A `503` with `"database": { "reachable": false }` means Supabase is not answering.
+2. Check the project status in the Supabase dashboard. A deleted project stops resolving entirely (`Non-existent domain` from `nslookup <ref>.supabase.co`); a paused one can be restored.
+3. Recreate the project if needed, run `supabase/schema.sql`, then update `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` in `.env.local` **and** in Vercel → Project → Settings → Environment Variables, then redeploy.
+
+While the database is unreachable the storefront keeps rendering the seed catalog from `lib/catalog.js`, but it cannot save orders. Checkout returns `503 Ordering is temporarily unavailable` instead of a generic failure.
+

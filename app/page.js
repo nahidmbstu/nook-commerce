@@ -2,20 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, ChevronDown, ChevronUp, Leaf, Minus, Plus, ShoppingBag, Truck, X } from "lucide-react";
-
-const fallbackProducts = [
-  { id: 1, title: "Morning Ritual Set", description: "A calm three-piece reset for your everyday start.", price: 1290, image_url: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=85" },
-  { id: 2, title: "Linen Carryall", description: "Roomy, structured and ready for the everyday commute.", price: 890, image_url: "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=900&q=85" },
-  { id: 3, title: "Soft Form Candle", description: "Warm cedar, amber and a slow evening in one small vessel.", price: 690, image_url: "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=900&q=85" },
-  { id: 4, title: "Desk Reset Kit", description: "Small tools for a cleaner desk and a clearer head.", price: 1590, image_url: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=900&q=85" }
-];
+import { ArrowRight, Bell, Check, ChevronDown, ChevronUp, Heart, Leaf, Menu, Minus, Plus, Search, ShoppingBag, Truck, UserRound, X } from "lucide-react";
+import { seedProducts } from "@/lib/catalog";
 
 const formatPrice = (value) => `৳${Number(value).toLocaleString("en-BD")}`;
 const DELIVERY_FEES = { city: 60, outside: 120 };
 
-export default function Storefront({ products = fallbackProducts }) {
-  const [catalog, setCatalog] = useState(products.length ? products : fallbackProducts);
+export default function Storefront({ products = seedProducts }) {
+  const [catalog, setCatalog] = useState(products.length ? products : seedProducts);
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [deliveryZone, setDeliveryZone] = useState("city");
@@ -115,16 +109,58 @@ export default function Storefront({ products = fallbackProducts }) {
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Nook home"><span className="brand-mark">N</span><span>nook<span className="brand-dot">.</span></span></a>
-        <button className="cart-button" onClick={() => setIsCartOpen(true)} aria-label={`Open cart with ${itemCount} items`}><ShoppingBag size={18} /><span>Bag</span>{itemCount > 0 && <b>{itemCount}</b>}</button>
+        <div className="header-left">
+          <button className="menu-button" aria-label="Open menu"><Menu size={20} /></button>
+          <a className="brand" href="#top" aria-label="Labonno Maya home"><span className="brand-mark">L</span><span>LABONNO MAYA</span></a>
+        </div>
+
+        <div className="header-actions" aria-label="Quick access actions">
+          <button className="top-icon" aria-label="Search"><Search size={18} /></button>
+          <button className="top-icon" aria-label="Notifications"><Bell size={18} /></button>
+          <button className="top-icon" aria-label="Account"><UserRound size={18} /></button>
+          <button className="top-icon" aria-label="Wishlist"><Heart size={18} /></button>
+          <button className="cart-button" onClick={() => setIsCartOpen(true)} aria-label={`Open cart with ${itemCount} items`}>
+            <ShoppingBag size={18} />
+            <span>Bag</span>
+            {itemCount > 0 && <b>{itemCount}</b>}
+          </button>
+        </div>
       </header>
 
       <section id="top" className="hero-section">
-        <div className="hero-copy"><p className="eyebrow">A little better, every day</p><h1>Keep good things <em>close.</em></h1><p className="hero-text">Thoughtfully chosen objects for the rituals that make your day feel like yours.</p><a className="hero-link" href="#collection">Shop the collection <ArrowRight size={16} /></a></div>
-        <div className="hero-art"><div className="hero-art-label"><Leaf size={15} /> made for slow moments</div></div>
+        <div className="hero-copy">
+          <p className="eyebrow">— Curated picks —</p>
+          <h1>Everyday <em>Luxury</em></h1>
+          <p className="hero-text">Premium style, made simple.</p>
+          <a className="hero-link" href="#collection">Explore now <ArrowRight size={16} /></a>
+        </div>
+        <div className="hero-art">
+          <div className="hero-art-card hero-card-watch">
+            <span className="mini-tag">Watch</span>
+            <strong>100%</strong>
+          </div>
+          <div className="hero-art-card hero-card-bottle">
+            <span className="mini-tag">Perfume</span>
+            <strong>Luxury</strong>
+          </div>
+          <div className="hero-art-label"><Leaf size={15} /> modern essentials</div>
+        </div>
       </section>
 
-      <section className="trust-row"><div><Truck size={18} /><span>Nationwide delivery</span></div><div><Check size={18} /><span>Quality, always</span></div><div><ShoppingBag size={18} /><span>Cash on delivery</span></div></section>
+      <section className="trust-row">
+        <div className="trust-item">
+          <div className="trust-icon"><Check size={18} /></div>
+          <span><strong>100%</strong><small>Authentic</small></span>
+        </div>
+        <div className="trust-item">
+          <div className="trust-icon"><Truck size={18} /></div>
+          <span><strong>2 Hour</strong><small>Delivery in Dhaka</small></span>
+        </div>
+        <div className="trust-item">
+          <div className="trust-icon"><ShoppingBag size={18} /></div>
+          <span><strong>VIP</strong><small>Customer support</small></span>
+        </div>
+      </section>
 
       <section id="collection" className="collection-section">
         <div className="section-heading"><div><p className="eyebrow">The collection</p><h2>Things worth making room for.</h2></div><button className="refresh-link" onClick={refreshProducts}>Updated from store <ArrowRight size={14} /></button></div>
@@ -132,7 +168,7 @@ export default function Storefront({ products = fallbackProducts }) {
         <div className="product-grid">{catalog.map((product, index) => <ProductCard key={product.id} product={product} index={index} onAdd={() => updateCart(product, 1)} onBuy={() => buyNow(product)} />)}</div>
       </section>
 
-      <footer className="site-footer"><div><a className="brand" href="#top"><span className="brand-mark">N</span><span>nook<span className="brand-dot">.</span></span></a><p>Small things, beautifully chosen.</p></div><span>© 2026 Nook Studio</span></footer>
+      <footer className="site-footer"><div><a className="brand" href="#top"><span className="brand-mark">L</span><span>Labonno Maya</span></a><p>Modern essentials, curated beautifully.</p></div><span>© 2026 Labonno Maya</span></footer>
       {isCartOpen && <CartDrawer cart={cart} subtotal={subtotal} deliveryFee={deliveryFee} total={total} deliveryZone={deliveryZone} setDeliveryZone={setDeliveryZone} onUpdate={updateCart} onClose={() => setIsCartOpen(false)} onSubmit={submitOrder} isSubmitting={isSubmitting} error={error} />}
     </main>
   );
@@ -147,5 +183,5 @@ function CartDrawer({ cart, subtotal, deliveryFee, total, deliveryZone, setDeliv
 }
 
 function ThankYou({ order, onContinue }) {
-  return <main className="thank-you"><div className="thank-card"><div className="success-mark"><Check size={28} /></div><p className="eyebrow">Order confirmed</p><h1>Thank you for choosing <em>nook.</em></h1><p className="thank-copy">Your order is on its way to becoming part of your everyday. We&apos;ll call shortly to confirm delivery.</p><div className="confirmation"><span>Confirmation ID</span><strong>#{String(order.id).slice(0, 8).toUpperCase()}</strong></div><div className="thank-summary">{order.items.map((item) => <div key={item.id}><span>{item.quantity} × {item.title}</span><b>{formatPrice(item.price * item.quantity)}</b></div>)}<div className="summary-total"><span>Total paid on delivery</span><strong>{formatPrice(order.total)}</strong></div></div><button className="place-order" onClick={onContinue}>Continue browsing <ArrowRight size={17} /></button></div></main>;
+  return <main className="thank-you"><div className="thank-card"><div className="success-mark"><Check size={28} /></div><p className="eyebrow">Order confirmed</p><h1>Thank you for choosing <em>Labonno Maya.</em></h1><p className="thank-copy">Your order is on its way to becoming part of your everyday. We&apos;ll call shortly to confirm delivery.</p><div className="confirmation"><span>Confirmation ID</span><strong>#{String(order.id).slice(0, 8).toUpperCase()}</strong></div><div className="thank-summary">{order.items.map((item) => <div key={item.id}><span>{item.quantity} × {item.title}</span><b>{formatPrice(item.price * item.quantity)}</b></div>)}<div className="summary-total"><span>Total paid on delivery</span><strong>{formatPrice(order.total)}</strong></div></div><button className="place-order" onClick={onContinue}>Continue browsing <ArrowRight size={17} /></button></div></main>;
 }
