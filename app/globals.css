@@ -14,6 +14,13 @@
   --line: #ddd2c5;
   --shadow: rgba(20, 18, 15, 0.08);
   --success: #1e4b39;
+  /* Theme aliases used throughout the storefront, drawer and admin screens. */
+  --ink: #171515;
+  --paper: #f8f5f0;
+  --cream: #f2eee8;
+  --sage: #e7ece2;
+  --forest: #1e4b39;
+  --accent: #d55a3c;
 }
 
 * { box-sizing: border-box; }
@@ -384,3 +391,58 @@ img { display: block; max-width: 100%; }
 @media (max-width: 700px) { .product-detail { padding-top: 35px; }.product-detail-grid { display: block; margin-top: 28px; }.product-detail-image { margin-bottom: 38px; max-height: none; }.product-detail-copy h1 { letter-spacing: -2px; } }
 
 .admin-page { background: #f1f3ed; color: var(--ink); min-height: 100vh; }.admin-header { align-items: center; background: var(--paper); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; padding: 18px max(5vw, 22px); }.admin-header-actions { align-items: center; color: var(--muted); display: flex; font-family: 'DM Mono', monospace; font-size: 10px; gap: 10px; }.admin-header-actions button { background: var(--cream); border: 0; display: grid; height: 34px; place-items: center; width: 34px; }.admin-content { margin: auto; max-width: 1440px; padding: 65px max(5vw, 22px) 100px; }.admin-title-row { align-items: end; display: flex; justify-content: space-between; margin-bottom: 38px; }.admin-title-row h1 { font-size: clamp(38px, 5vw, 64px); font-weight: 500; letter-spacing: -3px; line-height: 1; margin: 0; }.admin-title-row h1 span { color: var(--accent); font-family: 'DM Mono', monospace; font-size: 15px; letter-spacing: 0; vertical-align: top; }.admin-muted { color: var(--muted); font-size: 13px; line-height: 1.6; }.admin-store-link { align-items: center; color: var(--ink); display: flex; font-size: 12px; font-weight: 800; gap: 7px; text-decoration: none; }.admin-notice { background: var(--sage); color: var(--forest); font-family: 'DM Mono', monospace; font-size: 11px; padding: 12px 14px; }.orders-table-wrap { background: var(--paper); border: 1px solid var(--line); overflow-x: auto; }.orders-table { border-collapse: collapse; min-width: 980px; width: 100%; }.orders-table th { background: var(--cream); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 400; letter-spacing: .4px; padding: 14px 16px; text-align: left; text-transform: uppercase; }.orders-table td { border-top: 1px solid var(--line); font-size: 12px; padding: 18px 16px; vertical-align: top; }.orders-table td strong { display: block; font-size: 12px; margin-bottom: 5px; }.orders-table td small { color: var(--muted); display: block; font-size: 10px; line-height: 1.5; max-width: 200px; }.order-items { display: flex; flex-direction: column; gap: 6px; min-width: 150px; }.order-items span { color: var(--muted); font-size: 11px; }.status-select { border: 1px solid var(--line); border-radius: 999px; font-family: 'DM Mono', monospace; font-size: 10px; padding: 8px 11px; text-transform: capitalize; }.status-pending { background: #fff3d6; color: #8c5b00; }.status-confirmed { background: #dcebd8; color: #286044; }.status-shipped { background: #dde9f3; color: #285a7d; }.status-delivered { background: #d5eee4; color: #16624c; }.status-cancelled { background: #f6dcd5; color: #9a3f2b; }.admin-empty { align-items: center; background: var(--paper); color: var(--muted); display: flex; flex-direction: column; gap: 12px; justify-content: center; min-height: 260px; }.admin-login { background: var(--paper); border: 1px solid var(--line); margin: auto; max-width: 440px; padding: 50px clamp(24px, 6vw, 60px); width: calc(100% - 44px); }.admin-page:has(.admin-login) { align-items: center; display: flex; }.admin-logo { align-items: center; background: var(--forest); border-radius: 50%; color: #fff; display: flex; font-family: Georgia, serif; font-size: 24px; font-style: italic; height: 52px; justify-content: center; margin-bottom: 30px; width: 52px; }.admin-login h1 { font-size: 38px; font-weight: 500; letter-spacing: -2px; margin: 0; }.admin-login form { margin-top: 30px; }.admin-login label { color: var(--muted); display: block; font-family: 'DM Mono', monospace; font-size: 10px; margin-top: 17px; text-transform: uppercase; }.admin-login input { background: transparent; border: 1px solid var(--line); display: block; font-family: 'Manrope', sans-serif; font-size: 13px; margin-top: 7px; padding: 13px; width: 100%; }.admin-submit { align-items: center; background: var(--accent); border: 0; color: #fff; display: flex; font-size: 12px; font-weight: 800; gap: 8px; justify-content: center; margin-top: 24px; padding: 15px; width: 100%; }.admin-submit svg:last-child { margin-left: auto; }.admin-error { background: #f6dcd5; color: #9a3f2b; font-size: 11px; padding: 11px; }
+
+/* ---- Responsive fixes for the header and hero ---- */
+@media (max-width: 900px) {
+  .site-header { height: 68px; padding: 0 16px; }
+  .header-left { gap: 10px; min-width: 0; }
+  .header-actions { flex: 0 0 auto; gap: 8px; }
+  .menu-button, .top-icon { height: 32px; width: 32px; }
+  .brand { font-size: 15px; gap: 8px; letter-spacing: 0.12rem; white-space: nowrap; }
+  .brand-mark { height: 24px; width: 24px; font-size: 12px; }
+  .cart-button { padding: 9px 12px; }
+  .hero-art { min-height: 300px; padding: 20px 16px 34px; }
+  .hero-art::before { height: 185px; }
+  .hero-art::after { height: 32px; width: 48%; }
+  .hero-card-watch { height: 160px; width: 152px; }
+  .hero-card-bottle { height: 160px; width: 100px; }
+}
+
+@media (max-width: 720px) {
+  .hero-copy { padding: 56px 20px 44px; }
+  .hero-copy h1 { font-size: clamp(38px, 8vw, 60px); letter-spacing: -2px; }
+  .hero-art-label { right: 16px; }
+  .trust-item { gap: 12px; min-height: 120px; padding: 22px 10px; }
+  .trust-icon { height: 44px; width: 44px; }
+  .trust-item strong { font-size: 22px; }
+  .trust-item small { font-size: 8px; letter-spacing: 0.06em; }
+}
+
+@media (max-width: 560px) {
+  .header-actions .top-icon { display: none; }
+  .site-header { height: 62px; }
+  .hero-section { min-height: 0; }
+  .hero-copy { padding: 46px 18px 36px; }
+  .hero-copy h1 { font-size: clamp(33px, 10vw, 44px); letter-spacing: -1.4px; }
+  .hero-text { font-size: 14px; margin: 16px 0 24px; }
+  .hero-link { padding: 13px 18px; }
+  .hero-art { padding: 16px 12px 30px; }
+  .hero-art::before { height: 165px; }
+  .hero-art::after { width: 58%; }
+  .hero-card-watch { height: 142px; width: 136px; border-width: 8px; }
+  .hero-card-watch::before { height: 60px; width: 112px; top: -40px; }
+  .hero-art-label { font-size: 8px; padding: 7px 10px; }
+  .trust-item { min-height: 0; padding: 18px 6px; }
+  .trust-icon { height: 38px; width: 38px; }
+  .trust-item strong { font-size: 18px; }
+  .trust-item small { font-size: 7px; }
+  .product-info h3 { font-size: 14px; }
+  .collection-section { padding-left: 16px; padding-right: 16px; }
+}
+
+@media (max-width: 360px) {
+  .brand span:last-child { font-size: 13px; letter-spacing: 0.08rem; }
+  .hero-card-watch { height: 128px; width: 122px; }
+  .hero-card-bottle { height: 128px; width: 86px; }
+}
+
